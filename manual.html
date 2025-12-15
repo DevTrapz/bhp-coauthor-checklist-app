@@ -1,0 +1,178 @@
+<html lang="en">
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+    <script crossorigin="anonymous">
+      async function getBookProjectAuthors(bookProjectId) {
+        const url =
+          "https://bravehealerauthorchecklist-956509889567.us-central1.run.app";
+
+        const headers = {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        };
+
+        const searchParams = new URLSearchParams({
+          bookProjectId,
+        });
+        const fullUrl = `${url}?${searchParams.toString()}`;
+
+        try {
+          const response = await fetch(fullUrl, headers);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const authors = await response.json();
+          console.log(authors);
+          return authors;
+        } catch (error) {
+          console.error("Error fetching contacts:", error.message);
+          throw error;
+        }
+      }
+
+      const gridOptions = {
+        columnDefs: [
+          { field: "fullname", headerName: "Full Name" },
+          { field: "chapter-title", headerName: "Chapter Title" },
+          { field: "chapter-document", headerName: "Chapter Document" },
+          { field: "launch-video", headerName: "Launch Video" },
+          { field: "kickoff-video", headerName: "Kickoff Video" },
+          { field: "phase-1-sign-off", headerName: "Phase 1 Sign Off" },
+          { field: "phase-2-sign-off", headerName: "Phase 1 Sign Off" },
+          {
+            field: "name-approval",
+            headerName: "Name Approval",
+          },
+          { field: "id", headerName: "Submission id", hide: true },
+        ],
+        defaultColDef: { filter: true },
+        domHeight: "autoHeight",
+        autoSizeStrategy: {
+          type: "fitGridWidth",
+        },
+        onCellClicked: (e) => {
+          console.log(e.data);
+        },
+      };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const grid = document.querySelector("#grid");
+        const api = agGrid.createGrid(grid, gridOptions);
+        const columnButtons = document.querySelectorAll(".col-btn");
+
+        const bookProjectId = document.getElementById("projectId").textContent;
+
+        getBookProjectAuthors(parseInt(bookProjectId)).then((authors) => {
+          api.setGridOption("rowData", authors);
+        });
+
+        const handleClick = (e) => {
+          const btn = e.target;
+          const field = btn.id;
+
+          const column = api.getColumn(field);
+
+          if (column.isVisible()) {
+            btn.classList.add("btn-off");
+            btn.classList.remove("btn-on");
+            api.setColumnsVisible([column], false);
+          } else {
+            btn.classList.remove("btn-off");
+            btn.classList.add("btn-on");
+            api.setColumnsVisible([column], true);
+          }
+        };
+
+        for (const button of columnButtons) {
+          button.addEventListener("click", handleClick);
+        }
+      });
+    </script>
+    <style>
+      .column-options {
+        display: flex;
+        justify-content: start;
+        column-gap: 16px;
+        width: 1200px;
+        margin: 24px 0;
+      }
+
+      .show-column {
+        font-size: 20px;
+        font-family: "Poppins";
+        color: #0f0d12;
+        margin: 0 16px;
+      }
+
+      #grid {
+        width: 1200px;
+        height: 800px;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      .col-btn {
+        border-radius: 4px;
+        border: none;
+        font-size: 18px;
+        padding: 10px 1px;
+      }
+
+      .btn-on {
+        background-color: #326fd9 !important;
+        color: #ffffff;
+      }
+
+      .btn-off {
+        background-color: #e5e5e7 !important;
+      }
+
+      .ag-header-cell-text {
+        font-family: "Poppins";
+        font-size: 18px;
+        color: #ffffff;
+      }
+
+      .ag-header-cell {
+        background-color: #8c89d1;
+      }
+
+      .ag-cell {
+        font-family: "Poppins";
+        font-size: 16px;
+        color: #19173b;
+      }
+
+      .ag-row-odd {
+        background-color: #f3effb !important;
+      }
+
+      .ag-header-viewport {
+        background-color: #ffffff;
+        border: none;
+      }
+
+      .ag-icon {
+        color: #ffffff !important;
+      }
+    </style>
+  </head>
+  <body>
+    <h2 class="show-column">Show Columns:</h2>
+    <div class="column-options">
+      <button class="col-btn btn-on" id="chapter-title">Chapter Title</button>
+      <button class="col-btn btn-on" id="chapter-document">
+        Chapter Document
+      </button>
+      <button class="col-btn btn-on" id="launch-video">Launch Video</button>
+      <button class="col-btn btn-on" id="kickoff-video">Kickoff Video</button>
+      <button class="col-btn btn-on" id="name-approval">Name Approval</button>
+    </div>
+    <div id="grid"></div>
+    <p id="projectId" hidden>[Page//id]</p>
+  </body>
+</html>
