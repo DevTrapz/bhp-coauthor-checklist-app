@@ -8,4 +8,4 @@ services:
       - "8080:8080"
     volumes:
       - ./app:/app
-    command: tail -f /dev/null
+    command: npm run start
