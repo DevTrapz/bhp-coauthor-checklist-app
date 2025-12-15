@@ -1,0 +1,11 @@
+services:
+  node:
+    container_name: gcf
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./app:/app
+    command: tail -f /dev/null
