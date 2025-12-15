@@ -1,6 +1,6 @@
 services:
   node:
-    container_name: gcf
+    container_name: bhp-coauthor-checklist
     build:
       context: .
       dockerfile: Dockerfile
