@@ -127,7 +127,7 @@ async function getBookProjectAuthors(
   }
 }
 
-functions.http("bookprojectauthors", async (req, res) => {
+functions.http("getBookProjectCoauthors", async (req, res) => {
   try {
     const bookProjectId = req.query.bookProjectId;
     const authors = await getBookProjectAuthors(bookProjectId);
