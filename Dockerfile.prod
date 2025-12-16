@@ -5,6 +5,7 @@ RUN apt update && apt upgrade -y
 WORKDIR /app
 
 COPY ./app/package*.json ./
+COPY ./app/index.js ./
 
 RUN npm install
 RUN npm run start
