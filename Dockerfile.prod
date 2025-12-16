@@ -8,3 +8,4 @@ COPY ./app/package*.json ./
 COPY ./app/index.js ./
 
 RUN npm install
+ENTRYPOINT [ "npm", "run", "start" ]
